@@ -2,7 +2,7 @@
 
 Professional 1920x1080 student timetable display for Emerson University Multan.
 
-## Version 1.2
+## Version 1.3
 
 ### Updates
 
@@ -51,7 +51,7 @@ When a new semester timetable is issued, regenerate or replace `timetable.json` 
 
 ## Release Information
 
-**Version:** 1.2  
+**Version:** 1.3  
 **Semester:** Fall 2026  
 **Institution:** Emerson University Multan  
 **Faculty:** Faculty of Computing & Emerging Technologies  
