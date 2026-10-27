@@ -170,18 +170,23 @@ local function day_events(section, di)
 end
 
 local function status_for(events)
+    -- Use the exact same PKT clock that is shown in the header.
+    -- This prevents the header and NOW/NEXT panels from using different time zones.
     local t = pakistan_date()
-    local now = t.hour * 60 + t.min
+    local now = (tonumber(t.hour) or 0) * 60 + (tonumber(t.min) or 0)
     local cur, nxt = nil, nil
+
     for _, e in ipairs(events) do
         if e.start and e.finish then
             if now >= e.start and now < e.finish then
                 cur = e
+                break
             elseif e.start > now and not nxt then
                 nxt = e
             end
         end
     end
+
     return cur, nxt
 end
 
@@ -229,17 +234,18 @@ local function draw_status_card(x, y, w, h, title, color, e, is_now)
     rect(x + 22, y + 16, 30, 30, 0.92, 0.96, 0.92, 1)
     bold:write(x + 70, y + 17, title, 28, 1, 1, 1, 1)
     if not e then
-        bold:write(x + 30, y + 90, is_now and "NO CLASS NOW" or "NO MORE CLASSES", 27, 0.12, 0.20, 0.32, 1)
+        bold:write(x + 30, y + 92, is_now and "NO CLASS NOW" or "NO MORE CLASSES", 27, 0.12, 0.20, 0.32, 1)
         return
     end
     if e.is_break then
-        bold:write(x + 30, y + 92, "JUMMAH BREAK", 29, 0.90, 0.52, 0.10, 1)
+        bold:write(x + 30, y + 90, "JUMMAH BREAK", 29, 0.90, 0.52, 0.10, 1)
+        font:write(x + 30, y + 136, e.time or "", 21, 0.25, 0.30, 0.38, 1)
     else
-        bold:write(x + 30, y + 88, fit(e.course, bold, 30, w - 60), 30, 0.06, 0.12, 0.22, 1)
-        font:write(x + 30, y + 132, fit(e.instructor, font, 21, w - 60), 21, 0.18, 0.27, 0.38, 1)
-        font:write(x + 30, y + 168, "ROOM  " .. (e.room ~= "" and e.room or "—"), 20, 0.06, 0.32, 0.55, 1)
+        bold:write(x + 30, y + 84, fit(e.course, bold, 28, w - 60), 28, 0.06, 0.12, 0.22, 1)
+        font:write(x + 30, y + 128, fit(e.instructor, font, 20, w - 60), 20, 0.18, 0.27, 0.38, 1)
+        font:write(x + 30, y + 164, "ROOM  " .. (e.room ~= "" and e.room or "—"), 20, 0.06, 0.32, 0.55, 1)
+        font:write(x + 30, y + h - 36, e.time or "", 20, 0.22, 0.30, 0.40, 1)
     end
-    font:write(x + 30, y + h - 36, e.time or "", 20, 0.22, 0.30, 0.40, 1)
 end
 
 function node.render()
@@ -283,15 +289,17 @@ function node.render()
     local cur, nxt = status_for(events)
 
     -- ===== PROGRAM TITLE =====
-    bold:write(45, 195, fit(section.name or "", bold, 39, W - 650), 39, 0.03, 0.12, 0.24, 1)
-    font:write(47, 241, (section.semester or "") .. "  •  " .. (section.shift or "") .. "  •  FALL 2026", 23, 0.13, 0.25, 0.39, 1)
+    bold:write(45, 190, fit(section.name or "", bold, 39, W - 650), 39, 0.03, 0.12, 0.24, 1)
+    font:write(47, 234, (section.semester or "") .. "  •  " .. (section.shift or "") .. "  •  FALL 2026", 22, 0.13, 0.25, 0.39, 1)
 
     -- ===== LEFT TABLE =====
-    local leftX, leftY, leftW = 35, 285, math.floor(W * 0.665)
+    -- Extra vertical separation keeps the timetable heading clear of the
+    -- semester/shift line on 1920x1080 displays.
+    local leftX, leftY, leftW = 35, 315, math.floor(W * 0.665)
     local rightX, rightW = leftX + leftW + 25, W - (leftX + leftW + 25) - 35
 
-    bold:write(leftX + 10, 268, "TODAY'S CLASS TIMETABLE", 24, 0.05, 0.18, 0.34, 1)
-    font:write(leftX + 455, 269, day, 22, 0.05, 0.45, 0.70, 1)
+    bold:write(leftX + 10, 279, "TODAY'S CLASS TIMETABLE", 23, 0.05, 0.18, 0.34, 1)
+    font:write(leftX + leftW - 125, 280, day, 21, 0.05, 0.45, 0.70, 1)
 
     rect(leftX, leftY, leftW, H - leftY - 105, 0.98, 0.99, 1.00, 1)
     rect(leftX, leftY, leftW, 58, 0.04, 0.24, 0.47, 1)
@@ -348,8 +356,8 @@ function node.render()
     end
 
     -- ===== RIGHT NOW / NEXT =====
-    draw_status_card(rightX, 285, rightW, 235, "NOW  •  CURRENT CLASS", {0.02,0.48,0.29}, cur, true)
-    draw_status_card(rightX, 535, rightW, 235, "NEXT  •  UPCOMING CLASS", {0.03,0.38,0.72}, nxt, false)
+    draw_status_card(rightX, 315, rightW, 235, "NOW  •  CURRENT CLASS", {0.02,0.48,0.29}, cur, true)
+    draw_status_card(rightX, 565, rightW, 235, "NEXT  •  UPCOMING CLASS", {0.03,0.38,0.72}, nxt, false)
 
     -- ===== FOOTER / ROTATION =====
     rect(0, H - 82, W, 82, 0.02, 0.16, 0.32, 1)
