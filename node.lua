@@ -1,5 +1,7 @@
 gl.setup(NATIVE_WIDTH, NATIVE_HEIGHT)
 
+local json = require "json"
+
 local font = resource.load_font("font.ttf")
 local bold = resource.load_font("font-bold.ttf")
 
@@ -143,7 +145,9 @@ local function day_events(section, di)
     local evening = section.shift and section.shift:find("Evening") ~= nil
     for _, row in ipairs(section.rows or {}) do
         local cell = row.days and row.days[di]
-        if cell then
+        -- Lua CJSON represents JSON null as a userdata sentinel (json.null).
+        -- Treat null day cells as empty instead of indexing them.
+        if cell and cell ~= json.null then
             local is_break = cell["break"] == true
             if is_break then
                 local s, e = parse_range(row.time, evening)
@@ -245,7 +249,6 @@ function node.render()
     local section = current_section()
     local t = pakistan_date()
     local day = days[t.wday]
-    local date_str = os.date("%A\n%d %B %Y")
     local time_str = os.date("!%I:%M:%S %p", pakistan_time())
 
     -- ===== HEADER: white EUM branding + blue date/time panel =====
