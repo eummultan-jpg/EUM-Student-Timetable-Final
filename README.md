@@ -2,7 +2,7 @@
 
 Professional 1920x1080 student timetable display for Emerson University Multan.
 
-## Version 1.1
+## Version 1.2
 
 ### Updates
 
@@ -14,6 +14,7 @@ Professional 1920x1080 student timetable display for Emerson University Multan.
 - Improved Pakistan Standard Time (PKT) clock handling.
 - Improved AM/PM handling for morning and evening schedules.
 - Improved MS evening timetable display.
+- Improved timetable display stability and rendering.
 
 ## Included timetable sources
 
@@ -44,11 +45,13 @@ The supplied Fall 2026 timetable PDFs were converted into `timetable.json`.
 
 ## Important
 
-This package contains the timetable data extracted from the supplied Fall 2026 PDFs. When a new semester timetable is issued, regenerate/replace `timetable.json` with the new official timetable data and publish the updated package.
+This package contains the timetable data extracted from the supplied Fall 2026 PDFs.
+
+When a new semester timetable is issued, regenerate or replace `timetable.json` with the new official timetable data and publish the updated package.
 
 ## Release Information
 
-**Version:** 1.1  
+**Version:** 1.2  
 **Semester:** Fall 2026  
 **Institution:** Emerson University Multan  
 **Faculty:** Faculty of Computing & Emerging Technologies  
