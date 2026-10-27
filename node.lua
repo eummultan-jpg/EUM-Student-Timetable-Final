@@ -79,8 +79,12 @@ end
 
 local function parse_range(s, evening_hint)
     s = tostring(s or ""):gsub("–", "-"):gsub("—", "-")
-    local a, b, suf = s:match("^%s*(%d%d?:%d%d)%s*%-%s*(%d%d?:%d%d)%s*([ap]m)?%s*$")
+    -- Lua patterns do not support the regex-style ? quantifier.
+    -- Use + for the hour and %a* for an optional AM/PM suffix.
+    local a, b, suf = s:match("^%s*(%d+:%d%d)%s*%-%s*(%d+:%d%d)%s*(%a*)%s*$")
     if not a then return nil end
+    suf = tostring(suf or ""):lower()
+    if suf ~= "am" and suf ~= "pm" then suf = "" end
     local st = parse_clock(a, suf, evening_hint)
     local en = parse_clock(b, suf, evening_hint)
     if not st or not en then return nil end
