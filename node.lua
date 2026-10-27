@@ -11,6 +11,19 @@ local rotation_started = sys.now()
 
 local days = {"Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"}
 
+-- Pakistan Standard Time (PKT = UTC+5).
+-- Use UTC epoch + fixed offset so the display does not depend on the
+-- Raspberry Pi's operating-system timezone.
+local PKT_OFFSET = 5 * 60 * 60
+
+local function pakistan_time()
+    return os.time() + PKT_OFFSET
+end
+
+local function pakistan_date()
+    return os.date("!*t", pakistan_time())
+end
+
 local function clamp(v, lo, hi)
     if v < lo then return lo end
     if v > hi then return hi end
@@ -122,7 +135,7 @@ local function current_section()
 end
 
 local function today_index()
-    return os.date("*t").wday - 1
+    return pakistan_date().wday - 1
 end
 
 local function day_events(section, di)
@@ -153,7 +166,7 @@ local function day_events(section, di)
 end
 
 local function status_for(events)
-    local t = os.date("*t")
+    local t = pakistan_date()
     local now = t.hour * 60 + t.min
     local cur, nxt = nil, nil
     for _, e in ipairs(events) do
@@ -230,10 +243,10 @@ function node.render()
     gl.clear(0.94, 0.96, 0.98, 1)
 
     local section = current_section()
-    local t = os.date("*t")
+    local t = pakistan_date()
     local day = days[t.wday]
     local date_str = os.date("%A\n%d %B %Y")
-    local time_str = os.date("%I:%M:%S %p")
+    local time_str = os.date("!%I:%M:%S %p", pakistan_time())
 
     -- ===== HEADER: white EUM branding + blue date/time panel =====
     rect(0, 0, W, 165, 0.98, 0.99, 1.00, 1)
@@ -252,7 +265,7 @@ function node.render()
     local date_x = W - 570
     rect(date_x, 0, 570, 160, 0.04, 0.23, 0.46, 1)
     bold:write(date_x + 38, 27, day, 27, 1, 1, 1, 1)
-    bold:write(date_x + 38, 61, os.date("%d %B %Y"), 25, 1, 1, 1, 1)
+    bold:write(date_x + 38, 61, os.date("!%d %B %Y", pakistan_time()), 25, 1, 1, 1, 1)
     line(date_x + 285, 27, date_x + 285, 132, 2, 0.55, 0.70, 0.88, 1)
     bold:write(date_x + 315, 44, time_str, 31, 1, 1, 1, 1)
     font:write(date_x + 315, 91, "LIVE CLOCK", 17, 0.70, 0.88, 1, 1)
