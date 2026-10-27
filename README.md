@@ -2,6 +2,19 @@
 
 Professional 1920x1080 student timetable display for Emerson University Multan.
 
+## Version 1.1
+
+### Updates
+
+- Fixed current class (NOW) detection.
+- Fixed next upcoming class detection.
+- Added chronological sorting of timetable entries.
+- Improved timetable spacing and layout.
+- Fixed handling of empty timetable cells.
+- Improved Pakistan Standard Time (PKT) clock handling.
+- Improved AM/PM handling for morning and evening schedules.
+- Improved MS evening timetable display.
+
 ## Included timetable sources
 
 - 1st Semester — All Programmes
@@ -19,9 +32,11 @@ The supplied Fall 2026 timetable PDFs were converted into `timetable.json`.
 ## Automatic behavior
 
 - Uses the Raspberry Pi system clock.
+- Uses Pakistan Standard Time (PKT / UTC+5).
 - Detects Monday-Friday automatically.
 - Highlights the current class.
-- Shows the next class.
+- Shows the next upcoming class.
+- Sorts timetable entries chronologically.
 - Shows JUMMAH BREAK where present in the source timetable.
 - Automatically rotates through the sections.
 - Continues to work offline.
@@ -30,3 +45,12 @@ The supplied Fall 2026 timetable PDFs were converted into `timetable.json`.
 ## Important
 
 This package contains the timetable data extracted from the supplied Fall 2026 PDFs. When a new semester timetable is issued, regenerate/replace `timetable.json` with the new official timetable data and publish the updated package.
+
+## Release Information
+
+**Version:** 1.1  
+**Semester:** Fall 2026  
+**Institution:** Emerson University Multan  
+**Faculty:** Faculty of Computing & Emerging Technologies  
+**Resolution:** 1920x1080  
+**Platform:** Raspberry Pi / info-beamer
