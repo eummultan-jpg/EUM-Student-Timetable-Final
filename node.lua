@@ -183,8 +183,9 @@ local function status_for(events)
     for _, e in ipairs(events) do
         if e.start and e.finish then
             if now >= e.start and now < e.finish then
-                cur = e
-                break
+                -- Keep the current class, but continue scanning so the
+                -- following class can still be selected as NEXT.
+                if not cur then cur = e end
             elseif e.start > now and not nxt then
                 nxt = e
             end
